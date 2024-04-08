@@ -57,7 +57,7 @@ namespace ConnectFourGame
         int MakeMove();
     }
 
-    class HumanPlayer : IPlayer
+    class HumanPlayer : IPlayer // Constructor Method
     {
         public int MakeMove()
         {
@@ -90,34 +90,51 @@ namespace ConnectFourGame
         private IPlayer player1;
         private IPlayer player2;
 
-        public ConnectFourGame(IPlayer player1, IPlayer player2)
-        {
-           //todo
-           //porperties initializer constructor
-        }
-
-        private void InitializeBoard()
+        public ConnectFourGame(IPlayer player1, IPlayer player2) // Patricia 04/07/24
         {
             //todo
-            //implemet the InitializeBoard method
+            //properties initializer constructor
+            board = new char[6, 7];
+            currentPlayer = 'X';
+            InitializeBoard();
+            this.player1 = player1;
+            this.player2 = player2;
         }
 
-        public void PrintBoard()
-        {
-            //todo
-            //implemet the PrintBoard method
+        private void InitializeBoard() // Patricia 04/07/24
+        { // this method is used to create a new game of 6 rows and 7 columns
+            for (int row = 0; row < 6; row++)
+            {
+                for (int col = 0; col < 7; col++)
+                {
+                    board[row, col] = ' ';
+                }
+            }
+        }
+
+        public void PrintBoard() // Patricia 04/07/24
+        { // this method displays values over the game
+            for (int row = 0; row < 6; row++)
+            {
+                for (int col = 0; col < 7; col++)
+                {
+                    Console.Write(board[row, col] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("1 2 3 4 5 6 7");
         }
 
         public bool IsValidMove(int col)
         {
             //todo
-            //implemet the IsValidMove method
+            //implement the IsValidMove method
         }
 
         public void MakeMove(int col)
         {
             //todo
-            //implemet the MakeMove method
+            //implement the MakeMove method
         }
 
         public bool CheckWinner()
@@ -127,11 +144,11 @@ namespace ConnectFourGame
             return false;
         }
 
-        public void Play()
+        public void Play() // not finished
         {
             //todo
-            //implemet the Play method
-
+            //implement the Play method
+            PrintBoard(); //Patricia 04/07/24
         }
     }
 
@@ -142,7 +159,7 @@ namespace ConnectFourGame
             IPlayer humanPlayer1 = new HumanPlayer();
             IPlayer humanPlayer2 = new HumanPlayer();
 
-            //IPlayer computerPlayer = new ComputerPlayer();
+            //IPlayer computerPlayer = new ComputerPlayer(); // in case of play with AI
 
             ConnectFourGame game = new ConnectFourGame(humanPlayer1, humanPlayer2);
             game.Play();
