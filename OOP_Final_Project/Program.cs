@@ -52,14 +52,14 @@ using System.ComponentModel;
 
 namespace ConnectFourGame
 {
-    interface IPlayer
+    interface IPlayer //IPlayer is an interface that will work as base for other class that will implement its fields and methods if any
     {
-        int MakeMove();
+        int MakeMove(); //this method is incomplete and will be completed inside of the concrete class
     }
 
-    class HumanPlayer : IPlayer // Constructor Method
+    class HumanPlayer : IPlayer //class to create a humam player object to allow two humans playing the game
     {
-        public int MakeMove()
+        public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
         {
             Console.Write("\nChoose a column (1-7): ");
             int col = int.Parse(Console.ReadLine()) - 1;
@@ -67,27 +67,26 @@ namespace ConnectFourGame
         }
     }
 
-    //class ComputerPlayer : IPlayer
+    //class ComputerPlayer : IPlayer //class to create a computer player object to allow a human and a computer (AI) playing the game
     //{
-    //    private readonly Random random;
+    //    private readonly Random random; //property to generate random numbers inside the range
 
-    //    public ComputerPlayer()
+    //    public ComputerPlayer() //constructor method to initialize a ComputerPlayer creating a new random object
     //    {
     //        random = new Random();
     //    }
 
-    //    public int MakeMove()
+    //    public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
     //    {
-    //        // Simulate computer AI (random move)
-    //        return random.Next(7);
+    //        return random.Next(7); // Simulate computer AI (random move)
     //    }
     //}
 
-    class ConnectFourGame
+    class ConnectFourGame //this class will implement the ConnectFourGame itself and its game logic
     {
-        private char[,] board;
-        private char currentPlayer;
-        private IPlayer player1;
+        private char[,] board; //array to enforce the bounderies of the board 6x7
+        private char currentPlayer; //X or O it is used to holds the current player
+        private IPlayer player1; //player 1 and 2 is an Iplayer interface object
         private IPlayer player2;
 
         public ConnectFourGame(IPlayer player1, IPlayer player2) // Patricia 04/07/24
@@ -102,7 +101,7 @@ namespace ConnectFourGame
         }
 
         private void InitializeBoard() // Patricia 04/07/24
-        { // this method is used to create a new game of 6 rows and 7 columns
+        { // this method is used to initialize a new game of 6 rows and 7 columns
             for (int row = 0; row < 6; row++)
             {
                 for (int col = 0; col < 7; col++)
@@ -113,28 +112,36 @@ namespace ConnectFourGame
         }
 
         public void PrintBoard() // Patricia 04/07/24
-        { // this method displays values over the game
+        { // this method will print the empty string to hold the place for a piece and displays values over the game 
             for (int row = 0; row < 6; row++)
             {
                 for (int col = 0; col < 7; col++)
                 {
-                    Console.Write(board[row, col] + " ");
+                    //Console.Write(board[row, col] + " ");
+                    Console.Write($" | {board[row, col]}");
                 }
-                Console.WriteLine();
+                Console.WriteLine(" |");
             }
-            Console.WriteLine("1 2 3 4 5 6 7");
+                 Console.WriteLine(" -----------------------------");
+                 Console.WriteLine("   1   2   3   4   5   6   7  ");
+                //Console.WriteLine("1 2 3 4 5 6 7");
         }
 
-        public bool IsValidMove(int col)
+        public bool IsValidMove(int col) //this boolian method will check if there is a empty string on the column select, and if it is a valid column inside the board
         {
-            //todo
-            //implement the IsValidMove method
+            return board[0, col] == ' ';
         }
 
-        public void MakeMove(int col)
+        public void MakeMove(int col) // this method will drop the piece as if gravity was pulling it to the floor. So, it will start placing the pieces from the botton to the top on the column.
         {
-            //todo
-            //implement the MakeMove method
+            for (int row = 5; row >= 0; row--)
+            {
+                if (board[row, col] == ' ')
+                {
+                    board[row, col] = currentPlayer;
+                    break;
+                }
+            }
         }
 
         public bool CheckWinner()
