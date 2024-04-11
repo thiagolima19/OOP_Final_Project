@@ -1,54 +1,6 @@
-﻿//using System;
-
-///* public class ConectFourGame
-//{ */
-
-//public interface IConnect4
-//{ 
-//     void makeMove(); // method to be implemented by other class
-
-//}
-
-
-//public class HumanPlayer: IConnect4 // this class implements IConnect4
-//{ 
-//    public void makeMove()
-//    {
-//        // implementation
-//    }
-
-//}
-//class Program
-//{
-//    static void Main(string[] args)
-//    {
-//        string restart;
-//        string column;
-//        int numRows = 6;
-//        int numCols = 7;
-//        int[,] arrayGame = new int[numRows, numCols];
-//        string player1 = "X";
-//        string player2 = "O";
-//        Console.WriteLine("Connect 4 Game Development Project");
-
-//        Console.WriteLine("1  2   3   4   5   6   7");
-//        Console.WriteLine("Player X, choose a column (1-7):");
-//        column = Console.ReadLine();
-
-
-
-//        // print result
-//      //  Console.WriteLine("It's a Connect 4 Game....  ");
-//        do
-//        {
-//            Console.WriteLine("Restart? Yes(1) No(0): ");
-//            restart = Console.ReadLine();
-//        } while (restart != "1" && restart != "0");
-//    }
-//}
-
-using System;
+﻿using System;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 namespace ConnectFourGame
 {
@@ -57,12 +9,54 @@ namespace ConnectFourGame
         int MakeMove(); //this method is incomplete and will be completed inside of the concrete class
     }
 
-    class HumanPlayer : IPlayer //class to create a humam player object to allow two humans playing the game
+    class HumanPlayer : IPlayer //class to create a humamz player object to allow two humans playing the game
     {
-        public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
+        /*public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
         {
             Console.Write("\nChoose a column (1-7): ");
             int col = int.Parse(Console.ReadLine()) - 1;
+            return col;
+        } */
+        public int MakeMove() // Patricia 04/11/24 - EXCEPTION HANDLING ERRORS and option to leave game
+        {
+            int col = -1;
+            bool validInput = false;
+            while (!validInput)
+            {
+                try
+                {
+                    Console.Write($"\n{Name}, choose a column (1-7): ");
+                    string input = Console.ReadLine();
+
+                    // verify if user wants to finish the game
+                    if (input.ToLower() == "exit")
+                    {
+                        Environment.Exit(0);  // Leave game
+                    }
+
+                    col = int.Parse(input) - 1;
+
+                    if (col < 0 || col > 6)
+                    {
+                        throw new ArgumentOutOfRangeException(); // out of array boundary
+                    }
+
+                    validInput = true; // This command ensures the program advances after valid input is provided
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: This entry is not a number\n");
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Console.WriteLine("Error: Typed number is out of boundary between 1 and 7\n");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Unexpected error: Please, try again\n");
+                }
+            }
+
             return col;
         }
     }
@@ -84,10 +78,10 @@ namespace ConnectFourGame
 
     class ConnectFourGame //this class will implement the ConnectFourGame itself and its game logic
     {
-        private char[,] board; //array to enforce the bounderies of the board 6x7
+        private char[,] board; //array to enforce the boundaries of the board 6x7
         private char currentPlayer; //X or O it is used to holds the current player
         private IPlayer player1; //player 1 and 2 is an Iplayer interface object
-        private IPlayer player2;
+        private IPlayer player2; // may be a human or the computer
 
         public ConnectFourGame(IPlayer player1, IPlayer player2) // Patricia 04/07/24
         {
@@ -116,18 +110,16 @@ namespace ConnectFourGame
             for (int row = 0; row < 6; row++)
             {
                 for (int col = 0; col < 7; col++)
-                {
-                    //Console.Write(board[row, col] + " ");
+                {                   
                     Console.Write($" | {board[row, col]}");
                 }
                 Console.WriteLine(" |");
             }
                  Console.WriteLine(" -----------------------------");
-                 Console.WriteLine("   1   2   3   4   5   6   7  ");
-                //Console.WriteLine("1 2 3 4 5 6 7");
+                 Console.WriteLine("   1   2   3   4   5   6   7  ");               
         }
 
-        public bool IsValidMove(int col) //this boolian method will check if there is a empty string on the column select, and if it is a valid column inside the board
+        public bool IsValidMove(int col) //this boolean method will check if there is a empty string on the column select, and if it is a valid column inside the board
         {
             return board[0, col] == ' ';
         }
