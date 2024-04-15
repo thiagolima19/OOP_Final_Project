@@ -11,12 +11,13 @@ namespace ConnectFourGame
 
     class HumanPlayer : IPlayer //class to create a humamz player object to allow two humans playing the game
     {
-        /*public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
+        public string Name { get; } //property Name to hold a player name inputed on the console
+
+        public HumanPlayer(string name) //constructor to initialize Name as the name passed by the user
         {
-            Console.Write("\nChoose a column (1-7): ");
-            int col = int.Parse(Console.ReadLine()) - 1;
-            return col;
-        } */
+            Name = name;
+        }
+
         public int MakeMove() // Patricia 04/11/24 - EXCEPTION HANDLING ERRORS and option to leave game
         {
             int col = -1;
@@ -61,20 +62,22 @@ namespace ConnectFourGame
         }
     }
 
-    //class ComputerPlayer : IPlayer //class to create a computer player object to allow a human and a computer (AI) playing the game
-    //{
-    //    private readonly Random random; //property to generate random numbers inside the range
+    class ComputerPlayer : IPlayer //class to create a computer player object to allow a human and a computer (AI) playing the game
+    {
+        private readonly Random random; //property to generate random numbers inside the range
 
-    //    public ComputerPlayer() //constructor method to initialize a ComputerPlayer creating a new random object
-    //    {
-    //        random = new Random();
-    //    }
+        public string Name { get; } //property to get the name of the computer player whem a game is played by a human vs a computer player
+        public ComputerPlayer() //constructor method to initialize a ComputerPlayer creating a new random object
+        {
+            random = new Random();
+            Name = "Computer";
+        }
 
-    //    public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
-    //    {
-    //        return random.Next(7); // Simulate computer AI (random move)
-    //    }
-    //}
+        public int MakeMove() //Constructor Method that will implement the MakeMove() from the interface IPLayer
+        {
+            return random.Next(7); // Simulate computer AI (random move)
+        }
+    }
 
     class ConnectFourGame //this class will implement the ConnectFourGame itself and its game logic
     {
@@ -136,11 +139,86 @@ namespace ConnectFourGame
             }
         }
 
-        public bool CheckWinner()
+        public string CheckWinner() //this method will check a winner using the methods CheckHorizontal, CheckVertical, CheckDiagonal and CheckAntiDiagonal pieces position.
         {
-            // Implement the check for a winner (rows, columns, diagonals)
-            // Return true if a player wins, otherwise return false.
+            char playerSymbol = currentPlayer == 'X' ? 'X' : 'O'; //this line will check for the current player and will change it to the another one
+
+            // Check horizontally, vertically, diagonally, and anti-diagonally and returns a winner if any
+            if (CheckHorizontal(playerSymbol) || CheckVertical(playerSymbol) || CheckDiagonal(playerSymbol) || CheckAntiDiagonal(playerSymbol))
+            {
+                if (currentPlayer == 'X')
+                    return player1.Name;
+                else
+                    return player2.Name;
+            }
+
+            return null;
+        }
+
+        private bool CheckHorizontal(char playerSymbol)
+        {
+            // Check horizontally
+            for (int row = 0; row < 6; row++) //outer loop goes from index 0 to 6 in the rows
+            {
+                for (int col = 0; col < 4; col++) //inner loop will check evrey 4 places up the max number of columns 
+                {   //it will check if on each place in the board will have the same symblo/char from the same player than will return a winner if any
+                    if (board[row, col] == playerSymbol && board[row, col + 1] == playerSymbol && board[row, col + 2] == playerSymbol && board[row, col + 3] == playerSymbol)
+                        return true;
+                }
+            }
             return false;
+        }
+
+        private bool CheckVertical(char playerSymbol)
+        {
+            // Check vertically
+            for (int col = 0; col < 7; col++)//outer loop goes from index 0 to 6 in the columns 
+            {
+                for (int row = 0; row < 3; row++)  //inner loop will check evrey 4 places up the max number of rows
+                {   //it will check if on each place in the board will have the same symblo/char from the same player than will return a winner if any
+                    if (board[row, col] == playerSymbol && board[row + 1, col] == playerSymbol && board[row + 2, col] == playerSymbol && board[row + 3, col] == playerSymbol)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private bool CheckDiagonal(char playerSymbol)
+        {
+            // Check diagonally
+            for (int row = 0; row < 3; row++)//outer loop goes from index 0 to 2 in the rows, because the row only contains true diagonals from the index 0 to 2 that fits 4 pieces
+            {
+                for (int col = 0; col < 4; col++) //inner loop goes from index 0 to 3 in the columns, because the columns only contains true diagonals from the index 0 to 3 that fits 4 pieces
+                {   //it will check if on each place in the board will have the same symblo/char from the same player than will return a winner if any
+                    if (board[row, col] == playerSymbol && board[row + 1, col + 1] == playerSymbol && board[row + 2, col + 2] == playerSymbol && board[row + 3, col + 3] == playerSymbol)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private bool CheckAntiDiagonal(char playerSymbol)
+        {
+            // Check anti-diagonally
+            for (int row = 0; row < 3; row++) //outer loop goes from index 0 to 2 in the rows, because the row only contains true anti-diagonals from the index 0 to 2 that fits 4 pieces
+            {
+                for (int col = 3; col < 7; col++)//inner loop goes from index 3 to 6 in the columns, because the columns only contains true anti-diagonals from the index 3 to 6 that fits 4 pieces
+                {   //it will check if on each place in the board will have the same symblo/char from the same player than will return a winner if any
+                    if (board[row, col] == playerSymbol && board[row + 1, col - 1] == playerSymbol && board[row + 2, col - 2] == playerSymbol && board[row + 3, col - 3] == playerSymbol)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public bool CheckDraw() //this method will check for a draw
+        {
+            for (int col = 0; col < 7; col++) //this for loop will go through the board checking if the move is valid or not
+            {
+                if (IsValidMove(col))
+                    return false;
+            }
+            return true;
         }
 
         public void Play() // not finished
