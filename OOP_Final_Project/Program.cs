@@ -131,7 +131,7 @@ namespace ConnectFourGame
             return board[0, col] == ' ';
         }
 
-        // this method will drop the piece as if gravity was pulling it to the floor. So, it will start placing the pieces from the bottom to the top on the column
+        // this method will drop a piece as if gravity was pulling it to the floor. So, it will start placing the pieces from the bottom to the top on the column
         public void DropPiece(int col) 
         {
             for (int row = 5; row >= 0; row--)
