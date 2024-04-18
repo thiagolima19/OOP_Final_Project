@@ -9,7 +9,7 @@ namespace ConnectFourGame
     {
 
         string Name { get; }// Patricia 04/16/24
-        int MakeMove(); //this method is implemented inside of the concrete class
+        int MakeMove(); //this method is implemented inside of the concrete classes
     }
 
     class HumanPlayer : IPlayer //class to create a human player object to allow two humans playing the game
@@ -21,7 +21,7 @@ namespace ConnectFourGame
             Name = name;
         }
 
-        public int MakeMove() 
+        public int MakeMove()  // method came from Interface
         {
             int col = -1;
             bool validInput = false;
@@ -125,14 +125,14 @@ namespace ConnectFourGame
             Console.WriteLine("   1   2   3   4   5   6   7  ");
         }
 
-        //this boolean method will check if there is a empty string on the column select, and if it is a valid column inside the board
+        //this boolean method will check if there is an empty string on the column select, and if it is a valid column inside the board
         public bool IsValidMove(int col)
         { 
             return board[0, col] == ' ';
         }
 
         // this method will drop the piece as if gravity was pulling it to the floor. So, it will start placing the pieces from the bottom to the top on the column
-        public void MakeMove(int col) 
+        public void DropPiece(int col) 
         {
             for (int row = 5; row >= 0; row--)
             {
@@ -245,14 +245,14 @@ namespace ConnectFourGame
                 PrintBoard();
 
                 int col;
-                if (currentPlayer == 'X')
-                    col = player1.MakeMove();
+                if (currentPlayer == 'X') // This variable keeps track of whose turn it is ('X' or 'O')
+                    col = player1.MakeMove(); //This method is called based on the current player's turn to get its move (column selection)
                 else
                     col = player2.MakeMove();
 
-                if (col >= 0 && col < 7 && IsValidMove(col))
+                if (col >= 0 && col < 7 && IsValidMove(col)) // verifies if the selected column is inside the boundary of array and the cell itself is empty
                 {
-                    MakeMove(col);
+                    DropPiece(col);
                     string winner = CheckWinner();
                     if (!string.IsNullOrEmpty(winner))
                     {
@@ -261,7 +261,7 @@ namespace ConnectFourGame
 
                         if (PromptPlayAgain())
                         {
-                            InitializeBoard();
+                            InitializeBoard(); // restart the game
                             currentPlayer = 'X';
                             continue;
                         }
@@ -270,7 +270,7 @@ namespace ConnectFourGame
                             break;
                         }
                     }
-                    else if (CheckDraw())
+                    else if (CheckDraw()) // check if the result is draw (there is no winner)
                     {
                         PrintBoard();
                         Console.WriteLine("Sorry!!!\nIt's a draw!");
