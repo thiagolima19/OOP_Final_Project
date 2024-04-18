@@ -91,7 +91,7 @@ namespace ConnectFourGame
 
         public ConnectFourGame(IPlayer player1, IPlayer player2) // Patricia 04/07/24
         {
-        //properties initializer constructor
+            //properties initializer constructor
             board = new char[6, 7];
             currentPlayer = 'X'; //X or O it is used to holds the current player, but starts using this value
             InitializeBoard();
@@ -112,7 +112,7 @@ namespace ConnectFourGame
 
         // this method will print the empty string to hold the place for a piece and displays values over the game 
         public void PrintBoard() // Patricia 04/07/24
-        { 
+        {
             for (int row = 0; row < 6; row++)
             {
                 for (int col = 0; col < 7; col++)
@@ -127,12 +127,12 @@ namespace ConnectFourGame
 
         //this boolean method will check if there is an empty string on the column select, and if it is a valid column inside the board
         public bool IsValidMove(int col)
-        { 
+        {
             return board[0, col] == ' ';
         }
 
         // this method will drop a piece as if gravity was pulling it to the floor. So, it will start placing the pieces from the bottom to the top on the column
-        public void DropPiece(int col) 
+        public void DropPiece(int col)
         {
             for (int row = 5; row >= 0; row--)
             {
@@ -145,7 +145,7 @@ namespace ConnectFourGame
         }
 
         //this method will check a winner using the methods CheckHorizontal, CheckVertical, CheckDiagonal and CheckAntiDiagonal pieces position.
-        public string CheckWinner() 
+        public string CheckWinner()
         {
             char playerSymbol = currentPlayer == 'X' ? 'X' : 'O'; //this line will check for the current player and will change it to the another one
 
@@ -218,7 +218,7 @@ namespace ConnectFourGame
         }
 
         //this method will check if the game gets a draw
-        public bool CheckDraw()  
+        public bool CheckDraw()
         {
             for (int col = 0; col < 7; col++) //this for loop will go through the board checking if the move is valid or not
             {
@@ -287,7 +287,7 @@ namespace ConnectFourGame
                         }
                     }
                     currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-                }                
+                }
             }
         }
     }
@@ -296,15 +296,51 @@ namespace ConnectFourGame
     {
         static void Main(string[] args)
         {
-            IPlayer humanPlayer1 = new HumanPlayer();
-            IPlayer humanPlayer2 = new HumanPlayer();
+            //this will prompt to the user how they wiuld like to play
+            Console.WriteLine("Welcome to Connect Four!");
+            Console.WriteLine("Select an opponent:");
+            Console.WriteLine("1. Play against another human player");
+            Console.WriteLine("2. Play against the computer");
 
-            //IPlayer computerPlayer = new ComputerPlayer(); // in case of play with AI
+            int choice; //based on their choice a while loop will prompt based on the option if it will be human vs human or human vs machine
+            while (true)
+            {
+                Console.Write("Enter your choice (1 or 2): ");
+                if (int.TryParse(Console.ReadLine(), out choice))
+                {
+                    if (choice == 1 || choice == 2) //checks if is the right choice
+                        break;
+                    else
+                        Console.WriteLine("Invalid choice. Please enter 1 or 2.");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a number.");
+                }
+            }
 
-            ConnectFourGame game = new ConnectFourGame(humanPlayer1, humanPlayer2);
-            game.Play();
+            Console.Write("Enter Player 1's name: "); //asks for the player one always
+            string playerName1 = Console.ReadLine();
+
+            IPlayer humanPlayer1 = new HumanPlayer(playerName1); //creates a new HumamPlayer Object based on the Interface
+            IPlayer player2; //is optinal if there is no secind human play. Once the Machine name is already set up
+
+            if (choice == 1) //if the choice is 2 human vs human it asks for the second playr name
+            {
+                Console.Write("Enter Player 2's name: ");
+                string playerName2 = Console.ReadLine();
+                IPlayer humanPlayer2 = new HumanPlayer(playerName2);
+                player2 = humanPlayer2;
+            }
+            else
+            {
+                player2 = new ComputerPlayer(); //otherwise the name is automatic got from the Interface
+            }
+
+            ConnectFourGame game = new ConnectFourGame(humanPlayer1, player2); //creates a new object ConectFourGame
+            game.Play(); //starts the game itself
         }
-    }     
+    }
 }
-    
+
 
