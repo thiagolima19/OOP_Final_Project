@@ -21,7 +21,7 @@ namespace ConnectFourGame
             Name = name;
         }
 
-        public int MakeMove()  // method came from Interface
+        public int MakeMove()  // method of Interface IPlayer implemented
         {
             int col = -1;
             bool validInput = false;
@@ -31,6 +31,7 @@ namespace ConnectFourGame
                 try
                 {
                     Console.Write($"\n{Name}, choose a column (1-7): ");
+
                     string input = Console.ReadLine();
 
                     // verify if user wants to finish the game
@@ -45,6 +46,24 @@ namespace ConnectFourGame
                     {
                         throw new ArgumentOutOfRangeException(); // out of array boundary
                     }
+
+                    // Verify if a column is completely full - Patricia - 04/18/24
+                    bool columnFull = true;
+                    for (int row = 0; row < 6; row++)
+                    {
+                        if (ConnectFourGame.board[row, col] == ' ') // here is the verification 
+                        {
+                            columnFull = false;
+                            break;
+                        }
+                    }
+
+                    if (columnFull) // if column is full
+                    {
+                        Console.WriteLine($"\nColumn {col + 1} is completely filled. Choose another column");
+                        continue; // Ask new choice
+                    }
+                    // end of verification - Patricia
 
                     validInput = true; // This command ensures the program advances after valid input is provided
                 }
@@ -61,7 +80,7 @@ namespace ConnectFourGame
                     Console.WriteLine($"Unexpected error: Please, try again\n");
                 }
             }
-            return col;
+            return col; // teste chat
         }
     }
 
@@ -84,7 +103,7 @@ namespace ConnectFourGame
 
     class ConnectFourGame //this class will implement the ConnectFourGame itself and its game logic
     {
-        private char[,] board; //array to enforce the boundaries of the board 6x7
+        public static char[,] board; //array to enforce the boundaries of the board 6x7
         private char currentPlayer; //X or O it is used to holds the current player
         private IPlayer player1; //player 1 and 2 is an IPlayer interface object
         private IPlayer player2; // may be a human or the computer
@@ -110,20 +129,32 @@ namespace ConnectFourGame
             }
         }
 
-        // this method will print the empty string to hold the place for a piece and displays values over the game 
-        public void PrintBoard() // Patricia 04/07/24
+        public void PrintBoard()
         {
             for (int row = 0; row < 6; row++)
             {
                 for (int col = 0; col < 7; col++)
                 {
+                    // Check which player symbol is present and set color accordingly
+                    if (board[row, col] == 'X')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else if (board[row, col] == 'O')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
                     Console.Write($" | {board[row, col]}");
+                    Console.ResetColor(); // Reset color after printing the symbol
+
                 }
                 Console.WriteLine(" |");
+
             }
             Console.WriteLine(" -----------------------------");
             Console.WriteLine("   1   2   3   4   5   6   7  ");
         }
+
 
         //this boolean method will check if there is an empty string on the column select, and if it is a valid column inside the board
         public bool IsValidMove(int col)
@@ -287,6 +318,7 @@ namespace ConnectFourGame
                         }
                     }
                     currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+                    Console.Clear();
                 }
             }
         }
