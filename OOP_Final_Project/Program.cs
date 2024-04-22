@@ -80,7 +80,7 @@ namespace ConnectFourGame
                     Console.WriteLine($"Unexpected error: Please, try again\n");
                 }
             }
-            return col; // teste chat
+            return col; 
         }
     }
 
